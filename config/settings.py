@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic_settings import BaseSettings
 from yarl import URL
 
@@ -11,21 +13,34 @@ class Settings(BaseSettings):
     postgres_db: str
     postgres_echo: bool = False
 
+    cors_origin_whitelist: List = ["*"]
+
     @property
-    def db_url(self) -> URL:
+    def db_url(self) -> str:
         """
         Assemble repository URL from settings.
 
         :return: repository URL.
 
         """
-        return URL.build(
-            scheme="postgres+asyncpg",
+        url = str(URL.build(
+            scheme="postgresql+asyncpg",
             host=self.postgres_host,
             port=self.postgres_port,
             user=self.postgres_user,
             password=self.postgres_password,
             path=f"/{self.postgres_db}",
-        )
+        ))
+        print(url)
+        return url
+
+    class Config:
+        """
+        Configure the application.
+        """
+
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+
 
 settings = Settings()
