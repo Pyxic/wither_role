@@ -18,7 +18,8 @@ if config.config_file_name is not None:
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from character.models import Base
+from apps.character.models import Base # noqa
+from apps.user.models import Base # noqa
 from config.database import Base
 from config.settings import settings
 target_metadata = Base.metadata

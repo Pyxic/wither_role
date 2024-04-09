@@ -6,3 +6,11 @@ MANAGE = python manage.py
 # ------------------------------------------------------------------------------
 run:
 	uvicorn config.app:app_fastapi --reload
+
+migration:
+	alembic revision --autogenerate
+
+migrate:
+	alembic upgrade head
+
+

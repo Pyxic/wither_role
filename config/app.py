@@ -5,8 +5,6 @@ from contextlib import asynccontextmanager
 import toml
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-
-from config.database import db_helper, Base
 from config.router import api_router
 from config.settings import settings
 
@@ -39,8 +37,6 @@ def get_project_data() -> dict:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load the ML model
-    async with db_helper.engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     yield
 
 
