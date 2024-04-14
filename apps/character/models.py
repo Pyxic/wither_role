@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, SmallInteger
 
-from apps.character.enums import SocialStatus
+from apps.character.enums import SocialStatus, RegionType, ParentFateType, GenderType, AgeType, AttitudeType, \
+    CharacterTraitType, ImportantEventType
+from apps.user.models import User
 from config.database import Base
 from sqlalchemy.dialects.postgresql import BIGINT
 
@@ -11,7 +13,16 @@ class Character(Base):
     name: Mapped[str] = mapped_column(String(80), nullable=True)
     age: Mapped[int] = mapped_column(SmallInteger())
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user = relationship(back_populates="characters")
+    user: Mapped["User"] = relationship(back_populates="characters")
+    parent_fate_type: Mapped[ParentFateType] = mapped_column(nullable=True)
+    clothes: Mapped[str] = mapped_column(String(80), nullable=True)
+
+
+class CharacterTrait(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str]
+    character_id: Mapped[int] = mapped_column(ForeignKey("character.id"))
+    user: Mapped["Character"] = relationship(back_populates="traits")
 
 
 class Race(Base):
@@ -19,11 +30,55 @@ class Race(Base):
     name: Mapped[str] = mapped_column(String(50), unique=True)
     description: Mapped[str] = mapped_column(Text)
     social_status: Mapped[SocialStatus]
+    family_is_live: Mapped[bool] = mapped_column(nullable=True)
+    parents_is_live: Mapped[bool] = mapped_column(nullable=True)
 
 
 class Region(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(70), unique=True)
+    region_type: Mapped[RegionType]
+
+
+class FamilyFate(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(Text)
+    region_type: Mapped[RegionType]
+
+
+class ParentFate(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(Text)
+    region_type: Mapped[RegionType]
+
+
+class FamilySituation(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(Text)
+    region_type: Mapped[RegionType]
+
+
+class Friend(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(Text)
+    region_type: Mapped[RegionType]
+    equipment_id: Mapped[int] = mapped_column(ForeignKey("equipment.id"))
+    equipment: Mapped["Equipment"] = relationship("Equipment")
+
+
+class Relative(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    gender: Mapped[GenderType]
+    age: Mapped[AgeType]
+    attitude: Mapped[AttitudeType]
+    core_character_trait: Mapped[CharacterTraitType]
+
+
+class ImportantEvent(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    event_type: Mapped[ImportantEventType]
+    description: Mapped[str] = mapped_column(Text)
+    character = relationship("Character", back_populates="important_events")
 
 
 class Profession(Base):
