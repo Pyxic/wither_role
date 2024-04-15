@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, SmallInteger
+from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, SmallInteger, Table, Column
 
 from apps.character.enums import SocialStatus, RegionType, ParentFateType, GenderType, AgeType, AttitudeType, \
-    CharacterTraitType, ImportantEventType
+    CharacterTraitType, ImportantEventType, WhomIsValued, WhatValue
 from apps.user.models import User
 from config.database import Base
 from sqlalchemy.dialects.postgresql import BIGINT
@@ -16,6 +16,11 @@ class Character(Base):
     user: Mapped["User"] = relationship(back_populates="characters")
     parent_fate_type: Mapped[ParentFateType] = mapped_column(nullable=True)
     clothes: Mapped[str] = mapped_column(String(80), nullable=True)
+    hairstyle: Mapped[str] = mapped_column(String(50), nullable=True)
+    jewelry: Mapped[str] = mapped_column(String(50), nullable=True)
+    who_is_valued: Mapped[WhomIsValued] = mapped_column(nullable=True)
+    what_value: Mapped[WhatValue] = mapped_column(nullable=True)
+    thinks_about_people: Mapped[str] = mapped_column(String(255), nullable=True)
 
 
 class CharacterTrait(Base):
@@ -81,9 +86,33 @@ class ImportantEvent(Base):
     character = relationship("Character", back_populates="important_events")
 
 
+profession_equipment_association = Table(
+    'profession_equipment',
+    Base.metadata,
+    Column('profession_id', Integer, ForeignKey('profession.id')),
+    Column('equipment_id', Integer, ForeignKey('equipment.id'))
+)
+
+
 class Profession(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(80), unique=True)
+    defining_skill: Mapped[str] = mapped_column(String(100))
+    defining_skill_description: Mapped[str] = mapped_column(Text)
+    energy: Mapped[int] = mapped_column(SmallInteger, default=0)
+    equipments = relationship('Equipment', secondary=profession_equipment_association,
+                              back_populates='professions')
+    description: Mapped[str] = mapped_column(Text)
+
+
+class Attribute(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(15))
+    short_name: Mapped[str] = mapped_column(String(5))
+    description = Column(String)
+    code: Mapped[AttributeType]
+    skills = relationship("Skill", back_populates="attribute")
+
 
 
 class Character(Base):

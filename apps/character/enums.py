@@ -58,3 +58,33 @@ class ImportantEventType(enum.Enum):
     FORTUNE_OR_MISFORTUNE = "Fortune or misfortune"
     ALLIES_OR_ENEMIES = "Allies or enemies"
     LOVE = "Love"
+
+
+class WhomIsValued(enum.Enum):
+    PARENTS = "Parents"
+    BROTHER_SISTER = "Brother/Sister"
+    BELOVED = "Beloved"
+    FRIEND = "Friend"
+    YOURSELF = "Yourself"
+    PET = "Pet"
+    MENTOR = "Mentor"
+    PUBLIC_PERSON = "Public person"
+    PERSONAL_HERO = "Personal hero"
+    NOBODY = "Nobody"
+
+
+class WhatValue(enum.Enum):
+    MONEY = "Money"
+    HONOR = "Honor"
+    YOUR_WORD = "Your word"
+    EARTHLY_PLEASURES = "Earthly pleasures"
+    KNOWLEDGE = "Knowledge"
+    REVENGE = "Revenge"
+    POWER = "Power"
+    LOVE = "Love"
+    SURVIVAL = "Survival"
+    FRIENDSHIP = "Friendship"
+
+
+# class ThinkAboutPeople(enum.Enum):
+#     INSTRUMENTS = ""
