@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, SmallInteger, Table, Column
+from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, SmallInteger, Table, Column, Float
 
 from apps.character.enums import SocialStatus, RegionType, ParentFateType, GenderType, AgeType, AttitudeType, \
-    CharacterTraitType, ImportantEventType, WhomIsValued, WhatValue
+    CharacterTraitType, ImportantEventType, WhomIsValued, WhatValue, AttributeType
 from apps.user.models import User
 from config.database import Base
 from sqlalchemy.dialects.postgresql import BIGINT
@@ -21,13 +21,24 @@ class Character(Base):
     who_is_valued: Mapped[WhomIsValued] = mapped_column(nullable=True)
     what_value: Mapped[WhatValue] = mapped_column(nullable=True)
     thinks_about_people: Mapped[str] = mapped_column(String(255), nullable=True)
+    profession_id: Mapped[int] = mapped_column(ForeignKey("profession.id"), nullable=True)
+    profession: Mapped["Profession"] = relationship("Profession")
+    race_id: Mapped[int] = mapped_column(ForeignKey("race.id"), nullable=True)
+    race: Mapped["Race"] = relationship("Race")
+    region_id: Mapped[int] = mapped_column(ForeignKey("region.id"), nullable=True)
+    region: Mapped["Region"] = relationship("Region")
+
+    character_attributes = relationship('CharacterAttribute', back_populates='character')
+    character_skills = relationship('CharacterSkill', back_populates="character")
+    character_equipments = relationship("Equipment", back_populates="character")
+    traits = relationship("CharacterTrait", back_populates="character")
 
 
 class CharacterTrait(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str]
     character_id: Mapped[int] = mapped_column(ForeignKey("character.id"))
-    user: Mapped["Character"] = relationship(back_populates="traits")
+    character: Mapped["Character"] = relationship(back_populates="traits")
 
 
 class Race(Base):
@@ -107,25 +118,51 @@ class Profession(Base):
 
 class Attribute(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(15))
-    short_name: Mapped[str] = mapped_column(String(5))
+    name: Mapped[str] = mapped_column(String(15), unique=True)
+    short_name: Mapped[str] = mapped_column(String(5), unique=True)
     description = Column(String)
-    code: Mapped[AttributeType]
+    code: Mapped[AttributeType] = mapped_column(unique=True)
     skills = relationship("Skill", back_populates="attribute")
 
 
+class CharacterAttribute(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
+    attribute_id: Mapped[int] = mapped_column(ForeignKey('attribute.id'))
+    value: Mapped[int] = mapped_column(SmallInteger())
+    character = relationship("Character", back_populates="character_attributes")
+    attribute = relationship("Attribute")
 
-class Character(Base):
-    __tablename__ = 'character'
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
-    name = Column(String)
-    race = Column(String)
-    class_ = Column(String)
-    origin = Column(String)
-    description = Column(String)
-    avatar = Column(String)
-    user = relationship("User", back_populates="characters")
-    attributes = relationship("Attribute", secondary=character_attribute_table)
-    skills = relationship("Skill", secondary=character_skill_table)
-    items = relationship("Item", secondary=character_item_table)
+
+class Skill(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[int] = mapped_column(String(25), unique=True)
+    attribute_id: Mapped[int] = mapped_column(ForeignKey("attribute.id"))
+    attribute = relationship("Attribute", back_populates="skills")
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+
+
+class CharacterSkill(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
+    skill_id: Mapped[int] = mapped_column(ForeignKey('skill.id'))
+    value: Mapped[int] = mapped_column(SmallInteger())
+    character = relationship("Character", back_populates="character_skills")
+    attribute = relationship("Skill", back_populates="characters")
+
+
+class Equipment(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column()
+    price: Mapped[int] = mapped_column(SmallInteger)
+    weight: Mapped[float] = mapped_column(Float)
+    description: Mapped[str] = mapped_column(Text)
+
+
+class CharacterEquipment(Base):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
+    equipment_id: Mapped[int] = mapped_column(ForeignKey('equipment.id'))
+    quantity: Mapped[int] = mapped_column(SmallInteger())
+    character = relationship("Character", back_populates="character_equipments")
+    equipment = relationship("Equipment")

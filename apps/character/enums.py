@@ -86,5 +86,27 @@ class WhatValue(enum.Enum):
     FRIENDSHIP = "Friendship"
 
 
+class AttributeType(enum.Enum):
+    INTELLIGENCE = "intelligence"
+    REACTION = "reaction"
+    DEXTERITY = "dexterity"
+    PHYSIQUE = "physique"
+    SPEED = "speed"
+    EMPATHY = "empathy"
+    CRAFT = "craft"
+    VOLITION = "volition"
+    LUCK = "luck"
+    ENERGY = "energy"
+    SUSTAINABILITY = "sustainability"
+    RUNNING = "running"
+    JUMPING = "jumping"
+    HEALTH_POINTS = "health points"
+    STAMINA = "stamina"
+    TRANSFERABLE_WEIGHT = "transferable weight"
+    REST = "rest"
+    PUNCH = "punch"
+    KICK = "kick"
+
+
 # class ThinkAboutPeople(enum.Enum):
 #     INSTRUMENTS = ""
