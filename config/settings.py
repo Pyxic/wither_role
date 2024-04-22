@@ -1,6 +1,7 @@
 from typing import List
 
 from pydantic_settings import BaseSettings
+from starlette.templating import Jinja2Templates
 from yarl import URL
 
 
@@ -44,3 +45,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+templates = Jinja2Templates(directory="templates")

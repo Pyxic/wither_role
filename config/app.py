@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 import toml
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
+
 from config.router import api_router
 from config.settings import settings
 
@@ -23,7 +25,7 @@ def add_middleware(app_):
 
 
 def init_routers(app_: FastAPI) -> None:
-    app_.include_router(api_router, prefix="/api")
+    app_.include_router(api_router, prefix="")
 
 
 # extract title from pyproject.toml
@@ -56,6 +58,7 @@ def get_application() -> FastAPI:
     # Initialize other utils.
     init_routers(app_=app_)
     add_middleware(app_)
+    app_.mount("/static", StaticFiles(directory="static"), name="static")
 
     return app_
 
