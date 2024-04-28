@@ -14,6 +14,12 @@ class BaseRepository:
     model = None
 
     def __init__(self, model: Base, db_session: AsyncSession):
+        """
+        Initializes the BaseRepository with the specified model and database session.
+
+        :param model: The model to be used in the repository.
+        :param db_session: The asynchronous session to interact with the database.
+        """
         self.session_factory = db_session
         self.model = model
 
