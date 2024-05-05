@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 import toml
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
 from starlette.staticfiles import StaticFiles
 
 from config.registry import registry
@@ -23,6 +24,7 @@ def add_middleware(app_):
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app_.add_middleware(SessionMiddleware, secret_key=settings.secret_key)
 
 
 def init_routers(app_: FastAPI) -> None:

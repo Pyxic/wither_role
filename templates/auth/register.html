@@ -5,10 +5,10 @@
 </head>
 <body>
     <form action="" method="POST">
+        <input type="hidden" value="{{csrf_token}}" name="csrf_token">
         <input type="email" name="email" placeholder="Email" required>
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
-        <input type="password" name="repeat_password" placeholder="Repeat password" required>
         <button type="submit">Register</button>
     </form>
 </body>

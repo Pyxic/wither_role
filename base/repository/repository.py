@@ -111,6 +111,7 @@ class BaseRepository:
             row = await session.execute(select(self.model).filter_by(**filters))
             try:
                 result = row.scalar_one()
+                return result
             except NoResultFound:
                 raise NotFoundException()
             except MultipleResultsFound:

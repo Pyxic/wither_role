@@ -15,6 +15,13 @@ class Settings(BaseSettings):
     postgres_echo: bool = False
 
     cors_origin_whitelist: List = ["*"]
+    secret_key: str
+
+    # Secret key for signing jwt tokens
+    jwt_secret: str
+    jwt_algorithm: str = "HS256"
+    jwt_refresh_expiration: int = 60 * 60 * 24 * 30  # 30 days
+    jwt_access_expiration: int = 60 * 60  # 1 hour
 
     @property
     def db_url(self) -> str:
