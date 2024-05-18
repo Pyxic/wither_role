@@ -28,7 +28,7 @@ def add_middleware(app_):
 
 
 def init_routers(app_: FastAPI) -> None:
-    app_.include_router(api_router, prefix="")
+    app_.include_router(api_router, prefix="/api")
 
 
 # extract title from pyproject.toml
@@ -61,7 +61,6 @@ def get_application() -> FastAPI:
     # Initialize other utils.
     init_routers(app_=app_)
     add_middleware(app_)
-    app_.mount("/static", StaticFiles(directory="static"), name="static")
 
     return app_
 
