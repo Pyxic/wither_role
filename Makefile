@@ -13,4 +13,7 @@ migration:
 migrate:
 	alembic upgrade head
 
+init:
+	$(MANAGE) init
+
 

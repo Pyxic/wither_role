@@ -1,11 +1,10 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, Text, Integer, BigInteger, SmallInteger, Table, Column, Float
+from sqlalchemy import ForeignKey, String, Text, Integer, SmallInteger, Table, Column, Float
 
 from apps.character.enums import SocialStatus, RegionType, ParentFateType, GenderType, AgeType, AttitudeType, \
     CharacterTraitType, ImportantEventType, WhomIsValued, WhatValue, AttributeType
 from apps.user.models import User
 from config.database import Base
-from sqlalchemy.dialects.postgresql import BIGINT
 
 
 class Character(Base):
@@ -37,8 +36,9 @@ class Character(Base):
     friend: Mapped["Friend"] = relationship("Friend")
 
     character_attributes = relationship('CharacterAttribute', back_populates='character')
-    character_skills = relationship('CharacterSkill', back_populates="character")
-    character_equipments = relationship("Equipment", back_populates="character")
+    character_skills = relationship("CharacterSkill", back_populates="character")
+    character_equipments = relationship("CharacterEquipment", back_populates="character")  # Изменено
+    important_events = relationship("ImportantEvent", back_populates="character")  # Добавлено
     traits = relationship("CharacterTrait", back_populates="character")
 
 
@@ -102,7 +102,8 @@ class ImportantEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_type: Mapped[ImportantEventType]
     description: Mapped[str] = mapped_column(Text)
-    character = relationship("Character", back_populates="important_events")
+    character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
+    character: Mapped["Character"] = relationship("Character", back_populates="important_events")
 
 
 profession_equipment_association = Table(
@@ -119,8 +120,8 @@ class Profession(Base):
     defining_skill: Mapped[str] = mapped_column(String(100))
     defining_skill_description: Mapped[str] = mapped_column(Text)
     energy: Mapped[int] = mapped_column(SmallInteger, default=0)
-    equipments = relationship('Equipment', secondary=profession_equipment_association,
-                              back_populates='professions')
+    equipments = relationship("Equipment", secondary=profession_equipment_association,
+                              back_populates="professions")
     description: Mapped[str] = mapped_column(Text)
 
 
@@ -148,6 +149,7 @@ class Skill(Base):
     attribute_id: Mapped[int] = mapped_column(ForeignKey("attribute.id"))
     attribute = relationship("Attribute", back_populates="skills")
     description: Mapped[str] = mapped_column(Text, nullable=True)
+    characters = relationship("CharacterSkill", back_populates="skill")
 
 
 class CharacterSkill(Base):
@@ -155,8 +157,8 @@ class CharacterSkill(Base):
     character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
     skill_id: Mapped[int] = mapped_column(ForeignKey('skill.id'))
     value: Mapped[int] = mapped_column(SmallInteger())
-    character = relationship("Character", back_populates="character_skills")
-    attribute = relationship("Skill", back_populates="characters")
+    character: Mapped["Character"] = relationship("Character", back_populates="character_skills")
+    skill: Mapped["Skill"] = relationship("Skill", back_populates="characters")
 
 
 class Equipment(Base):
@@ -165,6 +167,9 @@ class Equipment(Base):
     price: Mapped[int] = mapped_column(SmallInteger)
     weight: Mapped[float] = mapped_column(Float)
     description: Mapped[str] = mapped_column(Text)
+    character_equipments = relationship("CharacterEquipment", back_populates="equipment")
+    professions = relationship("Profession", secondary=profession_equipment_association,
+                               back_populates="equipments")
 
 
 class CharacterEquipment(Base):
@@ -172,5 +177,5 @@ class CharacterEquipment(Base):
     character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
     equipment_id: Mapped[int] = mapped_column(ForeignKey('equipment.id'))
     quantity: Mapped[int] = mapped_column(SmallInteger())
-    character = relationship("Character", back_populates="character_equipments")
-    equipment = relationship("Equipment")
+    character: Mapped["Character"] = relationship("Character", back_populates="character_equipments")
+    equipment: Mapped["Equipment"] = relationship("Equipment")

@@ -6,8 +6,8 @@ import toml
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from starlette.staticfiles import StaticFiles
 
+from config.admin import admin_router
 from config.registry import registry
 from config.router import api_router
 from config.settings import settings
@@ -66,4 +66,5 @@ def get_application() -> FastAPI:
 
 
 app_fastapi = get_application()
+admin_router(app_fastapi)
 registry.wire()

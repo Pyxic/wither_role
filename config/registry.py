@@ -2,6 +2,7 @@
 from dependency_injector import containers, providers
 
 from apps.auth.containers import AuthContainer
+from apps.character.containers import CharacterContainer
 from apps.user.containers import UserContainer
 from config.database import DatabaseHelper
 
@@ -27,12 +28,14 @@ class Registry(containers.DeclarativeContainer):
         packages=[
             "apps.user",
             "apps.auth",
+            "config.commands"
         ],
     )
 
     gateways_container = providers.Container(Gateways)
 
     user_container = providers.Container(UserContainer, gateways_container=gateways_container)
+    character_container = providers.Container(CharacterContainer, gateways_container=gateways_container)
     authentication = providers.Container(AuthContainer, user_container=user_container)
 
 

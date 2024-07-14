@@ -25,6 +25,7 @@ email-validator = "^2.1.1"
 itsdangerous = "^2.2.0"
 fastapi-babel = "^0.0.9"
 python-multipart = "^0.0.9"
+sqladmin = {extras = ["full"], version = "^0.18.0"}
 
 
 [build-system]
