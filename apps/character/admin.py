@@ -41,7 +41,7 @@ class RelativeAdmin(ModelView, model=Relative):
 
 
 class ImportantEventAdmin(ModelView, model=ImportantEvent):
-    column_list = [ImportantEvent.id, ImportantEvent.character]
+    column_list = [ImportantEvent.id]
 
 
 class ProfessionAdmin(ModelView, model=Profession):

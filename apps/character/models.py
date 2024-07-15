@@ -7,6 +7,13 @@ from apps.user.models import User
 from config.database import Base
 
 
+character_event_association = Table(
+    'character_event_association', Base.metadata,
+    Column('character_id', Integer, ForeignKey('character.id')),
+    Column('event_id', Integer, ForeignKey('importantevent.id'))
+)
+
+
 class Character(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(80), nullable=True)
@@ -38,7 +45,8 @@ class Character(Base):
     character_attributes = relationship('CharacterAttribute', back_populates='character')
     character_skills = relationship("CharacterSkill", back_populates="character")
     character_equipments = relationship("CharacterEquipment", back_populates="character")  # Изменено
-    important_events = relationship("ImportantEvent", back_populates="character")  # Добавлено
+    important_events = relationship("ImportantEvent",
+                                    secondary=character_event_association, back_populates="characters")  # Добавлено
     traits = relationship("CharacterTrait", back_populates="character")
 
 
@@ -86,7 +94,7 @@ class Friend(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     description: Mapped[str] = mapped_column(Text)
     region_type: Mapped[RegionType]
-    equipment_id: Mapped[int] = mapped_column(ForeignKey("equipment.id"))
+    equipment_id: Mapped[int] = mapped_column(ForeignKey("equipment.id"), nullable=True)
     equipment: Mapped["Equipment"] = relationship("Equipment")
 
 
@@ -102,8 +110,11 @@ class ImportantEvent(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     event_type: Mapped[ImportantEventType]
     description: Mapped[str] = mapped_column(Text)
-    character_id: Mapped[int] = mapped_column(ForeignKey('character.id'))
-    character: Mapped["Character"] = relationship("Character", back_populates="important_events")
+    characters: Mapped[list["Character"]] = relationship(
+        "Character",
+        secondary=character_event_association,
+        back_populates="important_events"
+    )
 
 
 profession_equipment_association = Table(
