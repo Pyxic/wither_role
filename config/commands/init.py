@@ -1,3 +1,6 @@
+import json
+import pathlib
+
 from dependency_injector.wiring import Provide
 
 from apps.character.enums import AttributeType, SocialStatus, RegionType, ImportantEventType
@@ -7,6 +10,7 @@ from config.registry import Registry
 
 
 class ProjectInitialization:
+    path_name = pathlib.Path(__file__).parent
 
     @classmethod
     async def start(cls, app):
@@ -17,6 +21,7 @@ class ProjectInitialization:
         await cls.create_family_situation()
         await cls.create_friend()
         await cls.create_important_events()
+        await cls.create_professions()
         await cls.create_attributes()
 
     @classmethod
@@ -634,10 +639,22 @@ class ProjectInitialization:
                     "event_type": ImportantEventType.FORTUNE_OR_MISFORTUNE
                 }
             ]
+            await repository.bulk_create(items)
 
     @classmethod
-    async def create_attributes(cls, attribute_repository: AttributeRepository = Provide[
-        Registry.character_container.attribute_repository]):
+    async def create_professions(cls, repository: BaseRepository = Provide[
+        Registry.character_container.profession_repository]):
+        if not await repository.exists():
+            with open(cls.path_name / 'professions.json', 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                await repository.bulk_create(data)
+
+    @classmethod
+    async def create_attributes(
+            cls,
+            attribute_repository: AttributeRepository = Provide[Registry.character_container.attribute_repository],
+            skill_repository: BaseRepository = Provide[Registry.character_container.skill_repository]
+    ):
         print(await attribute_repository.exists())
         if not await attribute_repository.exists():
             attributes = [
@@ -759,3 +776,108 @@ class ProjectInitialization:
                 },
             ]
             await attribute_repository.bulk_create(attributes)
+
+        attributes = await attribute_repository.get()
+        print(attributes)
+        attribute_id_map = {attr.code: attr.id for attr in attributes}
+        print(f"{attribute_id_map=}")
+        if not await skill_repository.exists():
+            skills = [
+                {"name": "Внимание", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Выживание в дикой природе",
+                 "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE], "description": "Lorem"},
+                {"name": "Дедукция", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Монстрология", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Образование", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Ориентирование в городе", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Передача знаний", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem",},
+                {"name": "Тактика", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Торговля", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Этикет", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem",},
+                {"name": "Язык", "attribute_id": attribute_id_map[AttributeType.INTELLIGENCE],
+                 "description": "Lorem"},
+                {"name": "Ближний бой", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Борьба", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem",},
+                {"name": "Верховая езда", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Владение древковым оружием", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Владение клинковым оружием", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Владение мечом", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Мореплавание", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Уклонение/Изворотливость", "attribute_id": attribute_id_map[AttributeType.REACTION],
+                 "description": "Lorem"},
+                {"name": "Азартные игры", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Внешний вид", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Выступление", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Искусство", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Лидерство", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Обман", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Понимание людей", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Соблазнение", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Убеждение", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Харизма", "attribute_id": attribute_id_map[AttributeType.EMPATHY],
+                 "description": "Lorem"},
+                {"name": "Запупивание", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Наведение порчи", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Проведение ритуалов", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Сопротивление магии", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Сопротивление убеждению", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Сопротивление заклинаниям", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Храбрость", "attribute_id": attribute_id_map[AttributeType.VOLITION],
+                 "description": "Lorem"},
+                {"name": "Атлетика", "attribute_id": attribute_id_map[AttributeType.DEXTERITY],
+                 "description": "Lorem"},
+                {"name": "Ловкость рук", "attribute_id": attribute_id_map[AttributeType.DEXTERITY],
+                 "description": "Lorem"},
+                {"name": "Скрытность", "attribute_id": attribute_id_map[AttributeType.DEXTERITY],
+                 "description": "Lorem"},
+                {"name": "Стрельба из арбалета", "attribute_id": attribute_id_map[AttributeType.DEXTERITY],
+                 "description": "Lorem"},
+                {"name": "Стрельба из лука", "attribute_id": attribute_id_map[AttributeType.DEXTERITY],
+                 "description": "Lorem"},
+                {"name": "Алхимия", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+                {"name": "Взлом замков", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+                {"name": "Знание ловушек", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+                {"name": "Изготовление", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+                {"name": "Маскировка", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+                {"name": "Первая помощь", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+                {"name": "Подделивание", "attribute_id": attribute_id_map[AttributeType.CRAFT],
+                 "description": "Lorem"},
+            ]
+            await skill_repository.bulk_create(skills)

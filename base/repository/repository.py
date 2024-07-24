@@ -101,7 +101,7 @@ class BaseRepository:
                 stmt = stmt.offset(offset)
 
             row = await session.execute(stmt)
-            return row.scalars.all()
+            return row.scalars()
 
     async def filter(self, **filters):
         return await self.get(filters)

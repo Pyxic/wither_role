@@ -2,7 +2,7 @@
 from dependency_injector import containers, providers
 
 from apps.character.models import Attribute, Race, Region, FamilyFate, ParentFate, FamilySituation, Friend, \
-    ImportantEvent
+    ImportantEvent, Profession, Skill
 from apps.user.models import User
 from apps.character.repository import AttributeRepository
 from base.repository.repository import BaseRepository
@@ -18,6 +18,11 @@ class CharacterContainer(containers.DeclarativeContainer):
     attribute_repository = providers.Singleton(
         AttributeRepository,
         model=Attribute,
+        db_session=gateways_container.session_factory
+    )
+    skill_repository = providers.Singleton(
+        BaseRepository,
+        model=Skill,
         db_session=gateways_container.session_factory
     )
     race_repository = providers.Singleton(
@@ -54,4 +59,9 @@ class CharacterContainer(containers.DeclarativeContainer):
         BaseRepository,
         model=ImportantEvent,
         db_session=gateways_container.session_factory
+    )
+    profession_repository = providers.Singleton(
+        BaseRepository,
+        model=Profession,
+        db_session=gateways_container.session_factory,
     )

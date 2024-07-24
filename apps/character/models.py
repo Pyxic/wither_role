@@ -49,12 +49,18 @@ class Character(Base):
                                     secondary=character_event_association, back_populates="characters")  # Добавлено
     traits = relationship("CharacterTrait", back_populates="character")
 
+    def __str__(self):
+        return f"{self.id} - {self.name}"
+
 
 class CharacterTrait(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str]
     character_id: Mapped[int] = mapped_column(ForeignKey("character.id"))
     character: Mapped["Character"] = relationship(back_populates="traits")
+
+    def __str__(self):
+        return {f"{self.character_id - self.title}"}
 
 
 class Race(Base):
@@ -65,11 +71,17 @@ class Race(Base):
     family_is_live: Mapped[bool] = mapped_column(nullable=True)
     parents_is_live: Mapped[bool] = mapped_column(nullable=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Region(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(70), unique=True)
     region_type: Mapped[RegionType]
+
+    def __str__(self):
+        return self.name
 
 
 class FamilyFate(Base):
@@ -77,17 +89,26 @@ class FamilyFate(Base):
     description: Mapped[str] = mapped_column(Text)
     region_type: Mapped[RegionType]
 
+    def __str__(self):
+        return self.description
+
 
 class ParentFate(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     description: Mapped[str] = mapped_column(Text)
     region_type: Mapped[RegionType]
 
+    def __str__(self):
+        return self.description
+
 
 class FamilySituation(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     description: Mapped[str] = mapped_column(Text)
     region_type: Mapped[RegionType]
+
+    def __str__(self):
+        return self.description
 
 
 class Friend(Base):
@@ -97,6 +118,9 @@ class Friend(Base):
     equipment_id: Mapped[int] = mapped_column(ForeignKey("equipment.id"), nullable=True)
     equipment: Mapped["Equipment"] = relationship("Equipment")
 
+    def __str__(self):
+        return self.description
+
 
 class Relative(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -104,6 +128,9 @@ class Relative(Base):
     age: Mapped[AgeType]
     attitude: Mapped[AttitudeType]
     core_character_trait: Mapped[CharacterTraitType]
+
+    def __str__(self):
+        return self.gender
 
 
 class ImportantEvent(Base):
@@ -115,6 +142,9 @@ class ImportantEvent(Base):
         secondary=character_event_association,
         back_populates="important_events"
     )
+
+    def __str__(self):
+        return f"{self.event_type} {self.description}"
 
 
 profession_equipment_association = Table(
@@ -135,14 +165,20 @@ class Profession(Base):
                               back_populates="professions")
     description: Mapped[str] = mapped_column(Text)
 
+    def __str__(self):
+        return self.name
+
 
 class Attribute(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(15), unique=True)
+    name: Mapped[str] = mapped_column(String(25), unique=True)
     short_name: Mapped[str] = mapped_column(String(5), unique=True)
     description = Column(String)
     code: Mapped[AttributeType] = mapped_column(unique=True)
     skills = relationship("Skill", back_populates="attribute")
+
+    def __str__(self):
+        return self.name
 
 
 class CharacterAttribute(Base):
@@ -156,11 +192,14 @@ class CharacterAttribute(Base):
 
 class Skill(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[int] = mapped_column(String(25), unique=True)
+    name: Mapped[int] = mapped_column(String(40), unique=True)
     attribute_id: Mapped[int] = mapped_column(ForeignKey("attribute.id"))
     attribute = relationship("Attribute", back_populates="skills")
     description: Mapped[str] = mapped_column(Text, nullable=True)
     characters = relationship("CharacterSkill", back_populates="skill")
+
+    def __str__(self):
+        return self.name
 
 
 class CharacterSkill(Base):
@@ -181,6 +220,9 @@ class Equipment(Base):
     character_equipments = relationship("CharacterEquipment", back_populates="equipment")
     professions = relationship("Profession", secondary=profession_equipment_association,
                                back_populates="equipments")
+
+    def __str__(self):
+        return self.name
 
 
 class CharacterEquipment(Base):

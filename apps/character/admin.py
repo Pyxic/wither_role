@@ -1,11 +1,31 @@
 from sqladmin import ModelView
+from wtforms.fields.numeric import IntegerField
+from wtforms.form import Form
+from wtforms.validators import DataRequired
 
 from apps.character.models import Character, Equipment, Race, Region, FamilyFate, ParentFate, FamilySituation, Friend, \
-    Relative, ImportantEvent, Profession, Attribute, Skill
+    Relative, ImportantEvent, Profession, Attribute, Skill, CharacterAttribute, CharacterSkill
 
 
 class CharacterAdmin(ModelView, model=Character):
-    column_list = [Character.id, Character.name]
+    column_list = [
+        Character.id, Character.name, Character.age, Character.user_id,
+        Character.profession_id, Character.race_id, Character.region_id
+    ]
+    column_searchable_list = ['name']
+    column_filters = ['age', 'user_id', 'profession_id', 'race_id', 'region_id']
+
+    form_columns = [
+        'name', 'age', 'user_id', 'parent_fate_type', 'clothes', 'hairstyle',
+        'jewelry', 'who_is_valued', 'what_value', 'thinks_about_people',
+        'profession_id', 'race_id', 'region_id', 'family_fate_id',
+        'parent_fate_id', 'family_situation_id', 'friend_id', 'character_attributes'
+    ]
+
+    # Дополнительные формы для атрибутов и навыков
+    inline_models = [
+        CharacterAttribute, CharacterSkill
+    ]
 
 
 class EquipmentAdmin(ModelView, model=Equipment):

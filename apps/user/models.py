@@ -12,6 +12,9 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(50), unique=True)
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
-    avatar: Mapped[str]
+    avatar: Mapped[str] = mapped_column(nullable=True)
 
     characters: Mapped[List["Character"]] = relationship(back_populates="user")
+
+    def __str__(self):
+        return self.username
