@@ -466,13 +466,13 @@ all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)"
 
 [[package]]
 name = "fastapi-babel"
-version = "0.0.9"
+version = "0.0.8"
 description = "FastAPI-babel is an extenstion for I18n and I10n support in FastAPI, based on babel and pytz."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "fastapi-babel-0.0.9.tar.gz", hash = "sha256:f6d7146f74efe2194cb0221d8f7943394f1e79cbb481b52d5be9293b5c11db1f"},
-    {file = "fastapi_babel-0.0.9-py3-none-any.whl", hash = "sha256:643a6c2e4665e31e3383ea7f6a409ca445a185969e3437cd13d8894822d8052f"},
+    {file = "fastapi-babel-0.0.8.tar.gz", hash = "sha256:53933cf3bf5fcd5fa3fc86b57f5998da92c61ca7476e430c6626eed352b4c774"},
+    {file = "fastapi_babel-0.0.8-py3-none-any.whl", hash = "sha256:da1497f64e3a087297995ba862bd72104375de0082235a420ae03f4b10de150f"},
 ]
 
 [package.dependencies]
@@ -1332,4 +1332,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11,<=3.12"
-content-hash = "6b3b7f15db5aeafcbf35d3c57785751fc5bcb29b505dfc6edf8ea3e4556b2463"
+content-hash = "82db3a333b7f6c7ac1c944f280cf30f3bcc79a8ae8764f1777bc86dfc6519a4d"

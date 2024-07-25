@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     jwt_refresh_expiration: int = 60 * 60 * 24 * 30  # 30 days
     jwt_access_expiration: int = 60 * 60  # 1 hour
 
+    languages: list[str] = ["en", "ru"]
+
     @property
     def db_url(self) -> str:
         """

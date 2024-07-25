@@ -67,6 +67,7 @@ class DefaultHTTPException(BaseHTTPException):
         message: Union[str, "__LazyText"] = None,
         headers: typing.Optional[typing.Dict[str, Any]] = None,
     ):  # noqa
+        print(type(self.message))
         self.message = str(message) if message else str(self.message)
         super(DefaultHTTPException, self).__init__(headers=headers)
 

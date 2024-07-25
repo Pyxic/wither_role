@@ -1,0 +1,36 @@
+# English translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-07-25 14:15+0300\n"
+"PO-Revision-Date: 2024-07-25 14:16+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.14.0\n"
+
+#: utils/exceptions/http/auth.py:10
+msgid "Credentials were not provided."
+msgstr ""
+
+#: utils/exceptions/http/auth.py:16
+msgid "Invalid credentials."
+msgstr ""
+
+#: utils/exceptions/http/auth.py:22
+msgid "Invalid token."
+msgstr ""
+
+#: utils/exceptions/http/auth.py:28
+msgid "Insufficient rights to perform this action."
+msgstr ""
+
