@@ -49,7 +49,6 @@ class AuthService:
         # get user
         user: User = await self.user_repository.get_single(
             email=email.lower(),
-            raise_not_found=raise_not_found,
         )
         # check if user exists
         if not user and raise_not_found:

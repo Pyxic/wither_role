@@ -26,6 +26,7 @@ itsdangerous = "^2.2.0"
 fastapi-babel = "0.0.8"
 python-multipart = "^0.0.9"
 sqladmin = {extras = ["full"], version = "^0.18.0"}
+aiocache = "^0.12.2"
 
 
 [build-system]
