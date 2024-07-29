@@ -2,9 +2,8 @@ from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
 from fastapi import Request
 from starlette import status
-from starlette.responses import Response
 
-from apps.auth.dependencies import AuthenticatedUser, get_authenticated_user, get_authenticated_user_payload
+from apps.auth.dependencies import AuthenticatedUser
 from apps.auth.schemas import UserCreateSchema, UserPayload, LoginSchema
 from apps.auth.services import AuthService
 from apps.user.models import User
@@ -12,7 +11,7 @@ from config.registry import Registry
 from utils.exceptions.examples_generator import generate_examples
 from utils.exceptions.http.api import NotFoundException, RateLimitException
 from utils.exceptions.http.auth import InvalidCredentialsException
-from utils.security.schemas import AccessRefreshTokensSchema
+from utils.security.schemas import AccessRefreshTokensSchema, RefreshTokenSchema
 
 auth_router = APIRouter()
 
@@ -72,6 +71,26 @@ async def login_to_site(
     """
     tokens: AccessRefreshTokensSchema = await auth_service.login(user_login_schema=user_login_schema)
 
+    return tokens
+
+
+@auth_router.post(
+    "/refresh/",
+    name="auth:refresh",
+    summary="Refresh tokens for user",
+    status_code=status.HTTP_200_OK,
+    response_model=AccessRefreshTokensSchema,
+    responses=generate_examples(),
+)
+@inject
+async def staff_refresh_access_token(
+    refresh_token: RefreshTokenSchema,
+    auth_service: AuthService = Depends(Provide[Registry.authentication.auth_service]),
+) -> AccessRefreshTokensSchema:
+    """
+    Refresh tokens from refresh_token.
+    """
+    tokens: AccessRefreshTokensSchema = await auth_service.refresh_tokens(refresh_token.refresh)
     return tokens
 
 
