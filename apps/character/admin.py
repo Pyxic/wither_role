@@ -69,7 +69,7 @@ class ProfessionAdmin(ModelView, model=Profession):
 
 
 class AttributeAdmin(ModelView, model=Attribute):
-    column_list = [Attribute.id, Attribute.name]
+    column_list = [Attribute.id, Attribute.short_name, Attribute.name, Attribute.code]
 
 
 class SkillAdmin(ModelView, model=Skill):
