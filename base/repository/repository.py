@@ -4,7 +4,7 @@ from sqlalchemy import select, delete
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, NoResultFound, MultipleResultsFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import load_only
+from sqlalchemy.orm import load_only, joinedload, selectinload
 
 from config.database import Base
 from utils.exceptions.http.api import AlreadyExistsException, DBException, NotFoundException, MultipleFoundException
@@ -83,7 +83,11 @@ class BaseRepository:
             fields: List[str] | None = None,
             order_by = None,
             limit: int | None = None,
-            offset: int | None = None
+            offset: int | None = None,
+            select_related: List[str] | None = None,  # для joinedload
+            prefetch_related: List[str] | None = None,
+            distinct: bool = False,
+            as_query: bool = False,
     ):
         async with self.session_factory() as session:
             stmt = select(self.model)
@@ -99,6 +103,17 @@ class BaseRepository:
                 stmt = stmt.limit(limit)
             if offset is not None:
                 stmt = stmt.offset(offset)
+
+            if select_related:
+                select_related = [getattr(self.model, field) for field in select_related]
+                stmt = stmt.options(joinedload(*select_related))
+            if prefetch_related:
+                prefetch_related = [getattr(self.model, field) for field in prefetch_related]
+                stmt = stmt.options(selectinload(*prefetch_related))
+            if distinct:
+                stmt = stmt.distinct()
+            if as_query:
+                return stmt
 
             row = await session.execute(stmt)
             return row.scalars()

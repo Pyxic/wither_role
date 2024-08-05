@@ -28,7 +28,8 @@ class Registry(containers.DeclarativeContainer):
         packages=[
             "apps.user",
             "apps.auth",
-            "config.commands"
+            "apps.character",
+            "config.commands",
         ],
     )
 
