@@ -3,7 +3,7 @@ from dependency_injector import containers, providers
 
 from apps.character.models import Attribute, Race, Region, FamilyFate, ParentFate, FamilySituation, Friend, \
     ImportantEvent, Profession, Skill
-from apps.character.services import SkillService, AttributeService
+from apps.character.services import SkillService, AttributeService, RegionService, RaceService, ProfessionService
 from apps.user.models import User
 from apps.character.repository import AttributeRepository
 from base.repository.repository import BaseRepository
@@ -69,10 +69,23 @@ class CharacterContainer(containers.DeclarativeContainer):
 
     skill_service = providers.Singleton(
         SkillService,
-        skill_repository=skill_repository,
+        repository=skill_repository,
     )
 
     attribute_service = providers.Singleton(
         AttributeService,
-        attribute_repository=attribute_repository
+        repository=attribute_repository
+    )
+
+    region_service = providers.Singleton(
+        RegionService,
+        repository=region_repository
+    )
+    race_service = providers.Singleton(
+        RaceService,
+        repository=race_repository
+    )
+    profession_service = providers.Singleton(
+        ProfessionService,
+        repository=profession_repository
     )

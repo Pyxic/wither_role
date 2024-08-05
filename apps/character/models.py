@@ -48,6 +48,7 @@ class Character(Base):
     important_events = relationship("ImportantEvent",
                                     secondary=character_event_association, back_populates="characters")  # Добавлено
     traits = relationship("CharacterTrait", back_populates="character")
+    gender: Mapped[GenderType] = mapped_column(nullable=True)
 
     def __str__(self):
         return f"{self.id} - {self.name}"

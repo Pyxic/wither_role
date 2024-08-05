@@ -3,18 +3,33 @@ from apps.character.schemas import AttributeSchema
 from base.repository.repository import BaseRepository
 
 
-class SkillService:
-    def __init__(self, skill_repository: BaseRepository):
-        self.skill_repository = skill_repository
+class BaseService:
+    def __init__(self, repository: BaseRepository):
+        self.repository = repository
 
     async def list(self):
-        return self.skill_repository.get()
+        return await self.repository.get()
 
 
-class AttributeService:
-    def __init__(self, attribute_repository: AttributeRepository):
-        self.attribute_repository = attribute_repository
+class SkillService(BaseService):
+    pass
+
+
+class AttributeService(BaseService):
+    repository: AttributeRepository
 
     async def list(self) -> list[AttributeSchema]:
-        attributes = await self.attribute_repository.get_attributes_with_skills()
+        attributes = await self.repository.get_attributes_with_skills()
         return [AttributeSchema.model_validate(attribute) for attribute in attributes]
+
+
+class RaceService(BaseService):
+    pass
+
+
+class RegionService(BaseService):
+    pass
+
+
+class ProfessionService(BaseService):
+    pass
